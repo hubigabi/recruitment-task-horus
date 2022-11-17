@@ -10,13 +10,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WallTest {
 
-    final String[] colors = {"red", "green", "blue"};
-    final String[] materials = {"wood", "glass", "metal"};
+    private final String[] colors = {"red", "green", "blue"};
+    private final String[] materials = {"wood", "glass", "metal"};
 
     @Test
     void findBlockByColorTest() {
-        List<Block> blocks = getBlocks();
-        Wall wall = new Wall(blocks);
+        Wall wall = new Wall(getCompositeBlock());
         Optional<Block> redBlock = wall.findBlockByColor("red");
 
         assertTrue(redBlock.isPresent());
@@ -25,8 +24,7 @@ class WallTest {
 
     @Test
     void findEmptyBlockByColorTest() {
-        List<Block> blocks = getBlocks();
-        Wall wall = new Wall(blocks);
+        Wall wall = new Wall(getCompositeBlock());
         Optional<Block> blackBlock = wall.findBlockByColor("black");
 
         assertTrue(blackBlock.isEmpty());
@@ -34,8 +32,7 @@ class WallTest {
 
     @Test
     void findBlocksByMaterialTest() {
-        List<Block> blocks = getBlocks();
-        Wall wall = new Wall(blocks);
+        Wall wall = new Wall(getCompositeBlock());
         List<Block> woodenBlocks = wall.findBlocksByMaterial("wood");
 
         assertEquals(3, woodenBlocks.size());
@@ -46,32 +43,45 @@ class WallTest {
 
     @Test
     void countTest() {
-        List<Block> blocks = getBlocks();
-        Wall wall = new Wall(blocks);
-
-        assertEquals(blocks.size(), wall.count());
+        Wall wall = new Wall(getCompositeBlock());
+        assertEquals(9, wall.count());
     }
 
-    private List<Block> getBlocks() {
-        ArrayList<Block> blocks = new ArrayList<>();
+    public CompositeBlock getCompositeBlock() {
+        return new CompositeBlock() {
+            @Override
+            public List<Block> getBlocks() {
+                ArrayList<Block> blocks = new ArrayList<>();
 
-        for (String color : colors) {
-            for (String material : materials) {
-                Block block = new Block() {
-                    @Override
-                    public String getColor() {
-                        return color;
-                    }
+                for (String color : colors) {
+                    for (String material : materials) {
+                        Block block = new Block() {
+                            @Override
+                            public String getColor() {
+                                return color;
+                            }
 
-                    @Override
-                    public String getMaterial() {
-                        return material;
+                            @Override
+                            public String getMaterial() {
+                                return material;
+                            }
+                        };
+                        blocks.add(block);
                     }
-                };
-                blocks.add(block);
+                }
+                return blocks;
             }
-        }
-        return blocks;
+
+            @Override
+            public String getColor() {
+                return "color";
+            }
+
+            @Override
+            public String getMaterial() {
+                return "material";
+            }
+        };
     }
 
 }

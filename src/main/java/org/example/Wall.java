@@ -7,8 +7,8 @@ public class Wall implements Structure {
 
     private List<Block> blocks;
 
-    public Wall(List<Block> blocks) {
-        this.blocks = blocks;
+    public Wall(CompositeBlock compositeBlock) {
+        this.blocks = compositeBlock.getBlocks();
     }
 
     @Override
