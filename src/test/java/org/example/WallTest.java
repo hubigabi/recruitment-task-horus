@@ -35,7 +35,7 @@ class WallTest {
         Wall wall = new Wall(getCompositeBlock());
         List<Block> woodenBlocks = wall.findBlocksByMaterial("wood");
 
-        assertEquals(3, woodenBlocks.size());
+        assertEquals(9, woodenBlocks.size());
         for (Block block : woodenBlocks) {
             assertEquals("wood", block.getMaterial());
         }
@@ -44,10 +44,11 @@ class WallTest {
     @Test
     void countTest() {
         Wall wall = new Wall(getCompositeBlock());
-        assertEquals(9, wall.count());
+        assertEquals(27, wall.count());
     }
 
     public CompositeBlock getCompositeBlock() {
+        final int BLOCKS_INSIDE_COMPOSITE_BLOCK = 3;
         return new CompositeBlock() {
             @Override
             public List<Block> getBlocks() {
@@ -55,7 +56,16 @@ class WallTest {
 
                 for (String color : colors) {
                     for (String material : materials) {
-                        Block block = new Block() {
+                        CompositeBlock compositeBlock = new CompositeBlock() {
+                            @Override
+                            public List<Block> getBlocks() {
+                                ArrayList<Block> blocksInsideCompositeBlock = new ArrayList<>();
+                                for (int i = 0; i < BLOCKS_INSIDE_COMPOSITE_BLOCK; i++) {
+                                    blocksInsideCompositeBlock.add(getBlock(color, material));
+                                }
+                                return blocksInsideCompositeBlock;
+                            }
+
                             @Override
                             public String getColor() {
                                 return color;
@@ -66,7 +76,8 @@ class WallTest {
                                 return material;
                             }
                         };
-                        blocks.add(block);
+
+                        blocks.add(compositeBlock);
                     }
                 }
                 return blocks;
@@ -80,6 +91,20 @@ class WallTest {
             @Override
             public String getMaterial() {
                 return "material";
+            }
+        };
+    }
+
+    private Block getBlock(String color, String material) {
+        return new Block() {
+            @Override
+            public String getColor() {
+                return color;
+            }
+
+            @Override
+            public String getMaterial() {
+                return material;
             }
         };
     }
